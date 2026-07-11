@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亲本靓丽 · 产品体验报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--r:#B8453A;--ro:#D4795E;--g:#5A9E7E;--t:#4A8A9E;--a:#E8A838;--bg:#FDF9F3;--dk:#3D2B1F}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#2D2D2D;overflow:hidden}
+.slides{width:100vw;height:100vh;position:relative}
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:#fff;padding:60px 80px;
+  opacity:0;transform:scale(0.95);transition:all 0.5s ease;
+  overflow-y:auto;
+}
+.slide.active{opacity:1;transform:scale(1);z-index:1}
+.slide.cover{background:linear-gradient(135deg,#3D2B1F 0%,#5A3D2E 60%,#3D2B1F 100%);color:#E8D5B7}
+.slide.section{background:linear-gradient(135deg,#B8453A,#C49A4C);color:#fff}
+.slide.section.green{background:linear-gradient(135deg,#5A9E7E,#4A8A9E)}
+.slide h1{font-size:40px;font-weight:700;text-align:center;margin-bottom:16px}
+.slide h2{font-size:30px;font-weight:700;text-align:center;margin-bottom:12px}
+.slide h3{font-size:22px;font-weight:700;margin-bottom:20px;color:var(--dk)}
+.slide .subtitle{font-size:18px;opacity:0.7;text-align:center;margin-top:8px}
+.slide .cover h1{color:#E8D5B7;font-size:44px}
+.slide .cover h1 span{color:#C49A4C}
+.content{max-width:1100px;width:100%}
+.row{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.col{flex:1;min-width:300px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
+.kpi-box{background:var(--bg);border-radius:16px;padding:20px;text-align:center;border:1px solid #E8DDD2}
+.kpi-box .big{font-size:36px;font-weight:700}
+.kpi-box .big.r{color:var(--r)}.kpi-box .big.g{color:var(--g)}.kpi-box .big.a{color:var(--a)}
+.kpi-box .lab{font-size:13px;color:#A6988A;margin-top:4px}
+.chart-area{position:relative;height:350px}
+.chart-area.short{height:280px}
+canvas{width:100%!important}
+.tag{display:inline-block;padding:3px 12px;border-radius:14px;font-size:12px;font-weight:500}
+.tag.g{background:#E6F0E8;color:var(--g)}.tag.r{background:#FBE8E4;color:var(--r)}.tag.a{background:#FDF0ED;color:var(--a)}
+.insight{background:var(--bg);border-left:4px solid var(--a);border-radius:0 12px 12px 0;padding:14px 18px;margin:8px 0;font-size:15px;line-height:1.8}
+.insight.r{border-left-color:var(--r)}.insight.g{border-left-color:var(--g)}
+.nav{position:fixed;bottom:20px;right:30px;z-index:100;display:flex;gap:10px}
+.nav button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(0,0,0,0.5);color:#fff;font-size:20px;cursor:pointer;transition:all 0.2s}
+.nav button:hover{background:rgba(0,0,0,0.8)}
+.pagenum{position:fixed;bottom:24px;left:30px;z-index:100;color:rgba(255,255,255,0.6);font-size:13px}
+.cover .pagenum,.section .pagenum{color:rgba(255,255,255,0.5)}
+.cover .nav button,.section .nav button{background:rgba(255,255,255,0.2)}
+.table-wrap{overflow-x:auto;font-size:13px}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg);color:#B87C31;font-weight:600;padding:10px 8px;border-bottom:2px solid #E8D5B7;text-align:center}
+td{padding:8px;border-bottom:1px solid #F0EBE3;text-align:center}
+@media(max-width:800px){.slide{padding:40px 20px}.slide h1{font-size:28px}.slide h2{font-size:22px}}
+@media print{
+  body{background:#fff;overflow:visible}
+  .slide{position:relative!important;opacity:1!important;transform:none!important;page-break-after:always;height:auto!important;min-height:100vh}
+  .nav,.pagenum{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="slides" id="slides"></div>
+<div class="nav">
+  <button onclick="prevSlide()" title="上一页">◀</button>
+  <button onclick="nextSlide()" title="下一页">▶</button>
+</div>
+<div class="pagenum" id="pagenum"></div>
+
+<script>
+// ==================== DATA ====================
+const N = ['王佳钰','晴蘭','崋扬','邓婷','王家棋','唐贝贝','刘秀玲','李斐','陶维柏','郭雯浩'];
+const ages = [30,52,null,26,24,25,30,33,28,null];
+const genders = ['女','女','','女','女','女','女','男','男',''];
+
+const A = [
+  {ac:'可以接受',bi:1,cm:'非常舒适',px:'完全可接受',fv:'是',fvP:'面部',fvI:'中度',rd:'否',it:'否',nu:'是',nuP:'头部',nuI:'轻微',sw:'否',hb:'否',sg:'无'},
+  {ac:'可以接受',bi:4,cm:'一般',px:'勉强可接受',fv:'是',fvP:'面部、手部',fvI:'',rd:'是',rdP:'面部、脖子、手和腿',it:'是',itP:'全身',nu:'否',sw:'否',hb:'否',bo:'心脏揪着疼',sg:'无'},
+  {ac:''},{ac:''},{ac:''},
+  {ac:'可以接受',bi:4,cm:'非常舒适',px:'完全可接受',fv:'',rd:'是',rdP:'耳朵',rdD:'微红',it:'否',nu:'是',nuP:'耳朵、手部关节',nuI:'轻微',sw:'否',hb:'否',sg:'无'},
+  {ac:'不太喜欢',bi:2,cm:'有些不舒服',px:'完全可接受',fv:'是',fvP:'面部四肢',fvI:'轻微',rd:'是',rdP:'四肢',rdD:'微红',it:'是',itP:'脚、胳膊',itI:'轻微',nu:'是',nuP:'额头、脚趾、手',nuI:'轻微',sw:'否',hb:'否',bo:'空腹头晕恶心反酸',sg:'肠胃不好不建议空腹喝'},
+  {ac:'可以接受',bi:1,cm:'舒适',px:'完全可接受',fv:'否',rd:'否',it:'是',itP:'脸',itI:'轻微',nu:'是',nuP:'脸',nuI:'轻微',sw:'否',hb:'否',sg:'感觉还得增强一些'},
+  {ac:'很喜欢',bi:5,cm:'舒适',px:'完全可接受',fv:'是',fvP:'面部',fvI:'轻微',rd:'否',it:'是',itP:'脸部',itI:'轻微',nu:'否',sw:'否',hb:'否',sg:'产品良好，可以接受'},
+  {ac:''},
+];
+
+const B = [
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'轻微',ph:'无变化',dr:5,a30:'已恢复',st:4,ru:'是',sg:'无'},
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'轻微',ph:'无变化',dr:5,a30:'仍滋润',st:4,ru:'是',sg:'无'},
+  {ac:''},
+  {ac:'不太喜欢',tr:3,br:'',cf:'是',cfI:'中度',ph:'无变化',dr:15,a30:'已恢复',st:4,ru:'不确定',sg:'个人不喜欢这个口感'},
+  {ac:''},
+  {ac:'可以接受',tr:3,br:2,cf:'是',cfI:'轻微',ph:'无变化',dr:10,a30:'已恢复',st:4,ru:'是',sg:'无'},
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'中度',ph:'无变化',dr:10,a30:'已恢复',st:3,ru:'是',sg:'口感有所改善但依旧难喝'},
+  {ac:'可以接受',tr:2,br:2,cf:'否',ph:'无变化',dr:'',a30:'已恢复',st:2,ru:'不确定',sg:'没有感觉'},
+  {ac:'可以接受',tr:4,br:3,cf:'是',cfI:'轻微',ph:'无变化',dr:10,a30:'略干',st:4,ru:'是',sg:'建议有清凉感'},
+  {ac:''},
+];
+
+const cA = A.filter(d=>d.ac).length, cB = B.filter(d=>d.ac).length;
+const both = N.filter((_,i)=>A[i].ac&&B[i].ac).length;
+const biVals = A.filter(d=>typeof d.bi==='number').map(d=>d.bi);
+const avgBI = (biVals.reduce((a,b)=>a+b,0)/biVals.length).toFixed(1);
+const trVals = B.filter(d=>typeof d.tr==='number').map(d=>d.tr);
+const avgTR = (trVals.reduce((a,b)=>a+b,0)/trVals.length).toFixed(1);
+const stVals = B.filter(d=>typeof d.st==='number').map(d=>d.st);
+const avgST = (stVals.reduce((a,b)=>a+b,0)/stVals.length).toFixed(1);
+
+// ==================== SLIDES ====================
+const SLIDES = [];
+let currentSlide = 0;
+
+function S(html){SLIDES.push(html)}
+
+// Cover
+S(`<div class="slide cover active"><div style="text-align:center"><h1>亲本<span>靓丽</span></h1><div style="font-size:22px;margin:20px 0">产品体验数据分析报告</div><div style="font-size:15px;opacity:0.6;margin-top:30px">产品A「活体验报告」+ 产品B「润体验报告」</div><div style="font-size:14px;opacity:0.5;margin-top:8px">10位体验者 · 2026年7月</div></div></div>`);
+
+// Overview
+S(`<div class="slide"><div class="content"><h2 style="color:var(--dk)">📊 核心数据总览</h2>
+<div class="kpi-grid">
+<div class="kpi-box"><div class="big r">${cA}/10</div><div class="lab">产品A 完成</div></div>
+<div class="kpi-box"><div class="big g">${cB}/10</div><div class="lab">产品B 完成</div></div>
+<div class="kpi-box"><div class="big a">${both}人</div><div class="lab">双产品均完成</div></div>
+<div class="kpi-box"><div class="big r">${avgBI}</div><div class="lab">产品A 体感强度均值</div></div>
+<div class="kpi-box"><div class="big g">${avgTR}</div><div class="lab">产品B 咽喉缓解均值</div></div>
+<div class="kpi-box"><div class="big a">${avgST}</div><div class="lab">产品B 满意度均值</div></div>
+<div class="kpi-box"><div class="big g">${B.filter(d=>d.ru==='是').length}人</div><div class="lab">愿再次使用</div></div>
+<div class="kpi-box"><div class="big r">${A.filter(d=>d.nu==='是').length}人</div><div class="lab">产品A 有发麻反应</div></div>
+</div>
+<div class="insight">未完成者：崋扬、王家棋、郭雯浩（3人两款均空白）；邓婷（产品A未填）</div>
+</div>`);
+
+// Product A Section
+S(`<div class="slide section"><div style="text-align:center"><div style="font-size:60px;margin-bottom:16px">🔴</div><h1>产品A · 活体验报告</h1><div class="subtitle">口服体感追踪 — 发热 / 发红 / 发痒 / 痛感 / 发麻</div></div></div>`);
+
+// A: Acceptance
+S(`<div class="slide"><div class="content"><h3>🔴 产品A · 整体接受度</h3><div class="row"><div class="col"><div class="chart-area" id="c_a1"></div></div><div class="col"><div class="insight r"><b>${cA}/10 人完成</b><br>• ${A.filter(d=>d.ac==='很喜欢').length}人"很喜欢"<br>• ${A.filter(d=>d.ac==='可以接受').length}人"可以接受"<br>• ${A.filter(d=>d.ac==='不太喜欢').length}人"不太喜欢"</div></div></div></div></div>`);
+
+// A: Body reactions
+S(`<div class="slide"><div class="content"><h3>🔴 产品A · 体感反应分布（${cA}人）</h3><div class="chart-area" id="c_a2"></div></div></div>`);
+
+// A: Intensity vs Comfort
+S(`<div class="slide"><div class="content"><h3>🔴 产品A · 体感强度 & 舒适度</h3><div class="chart-area" id="c_a3"></div></div></div>`);
+
+// A: Key findings
+S(`<div class="slide"><div class="content"><h3>🔴 产品A · 关键发现</h3>
+<div class="insight r"><b>⚠️ 高风险案例 · 晴蘭（52岁/女）</b><br>体感强度4分，面部/脖子/四肢发红，全身发痒，"心脏揪着疼"，舒适度"一般"，痛感"勉强可接受"。建议关注年长体验者的耐受度，考虑按年龄调整剂量。</div>
+<div class="insight r"><b>⚠️ 空腹反应 · 刘秀玲（30岁/女）</b><br>空腹8小时饮用后出现头晕目眩、恶心反酸、肠胃不适。必须在产品说明中标注"建议饭后饮用"。</div>
+<div class="insight r"><b>📊 体感特征</b><br>最常见体感：发麻(${A.filter(d=>d.nu==='是').length}人) > 发痒(${A.filter(d=>d.it==='是').length}人) > 发热(${A.filter(d=>d.fv==='是').length}人)。体感强度差异大(1-5分)，个体耐受度是核心变量。</div>
+</div></div>`);
+
+// Product B Section
+S(`<div class="slide section green"><div style="text-align:center"><div style="font-size:60px;margin-bottom:16px">🟢</div><h1>产品B · 润体验报告</h1><div class="subtitle">咽喉润感追踪 — 干涩缓解 / 呼吸顺畅 / 清凉滋润 / 生津</div></div></div>`);
+
+// B: Acceptance
+S(`<div class="slide"><div class="content"><h3>🟢 产品B · 整体接受度</h3><div class="row"><div class="col"><div class="chart-area" id="c_b1"></div></div><div class="col"><div class="insight g"><b>${cB}/10 人完成</b><br>• ${B.filter(d=>d.ac==='很喜欢').length}人"很喜欢"<br>• ${B.filter(d=>d.ac==='可以接受').length}人"可以接受"<br>• ${B.filter(d=>d.ac==='不太喜欢').length}人"不太喜欢"<br>• ${B.filter(d=>d.ru==='是').length}人愿再次使用</div></div></div></div></div>`);
+
+// B: Scores
+S(`<div class="slide"><div class="content"><h3>🟢 产品B · 咽喉缓解 & 呼吸顺畅评分</h3><div class="chart-area" id="c_b2"></div></div></div>`);
+
+// B: Duration & After
+S(`<div class="slide"><div class="content"><h3>🟢 产品B · 持久度追踪</h3><div class="row"><div class="col"><div class="chart-area short" id="c_b3"></div></div><div class="col"><div class="chart-area short" id="c_b4"></div></div></div></div></div>`);
+
+// B: Key findings
+S(`<div class="slide"><div class="content"><h3>🟢 产品B · 关键发现</h3>
+<div class="insight g"><b>✅ 润喉效果明确</b><br>咽喉干涩缓解均值 <b>${avgTR}分</b>，呼吸顺畅提升均值 <b>${(B.filter(d=>typeof d.br==='number').reduce((a,b)=>a+b.br,0)/B.filter(d=>typeof d.br==='number').length).toFixed(1)}分</b>。${B.filter(d=>d.cf==='是').length}/${cB}人有清凉/滋润感。舒适感持续均值 ${Math.round(B.filter(d=>d.dr).reduce((a,b)=>a+Number(b.dr),0)/B.filter(d=>d.dr).length)}分钟。</div>
+<div class="insight g"><b>⚠️ 核心槽点：口感</b><br>王佳钰"很浓的中药味"、晴蘭"很重的中药味"、刘秀玲"烟草味太重回甘发苦"、陶维柏"有点发苦"。口感是影响接受度的首要因素。</div>
+<div class="insight g"><b>📊 低满意度案例 · 李斐（33岁/男）</b><br>满意度仅2分，"没有感觉，一点感觉都没有"。需要加强清凉感和即时反馈。</div>
+</div></div>`);
+
+// Compare
+S(`<div class="slide section"><div style="text-align:center"><div style="font-size:60px;margin-bottom:16px">⚖️</div><h1>产品对比 & 综合建议</h1></div></div>`);
+
+// Comparison table
+S(`<div class="slide"><div class="content"><h3>⚖️ 产品A vs 产品B 对比</h3>
+<table style="font-size:15px">
+<tr><th>维度</th><th style="color:var(--r)">产品A · 活体验</th><th style="color:var(--g)">产品B · 润体验</th></tr>
+<tr><td>完成率</td><td>${cA}/10</td><td>${cB}/10</td></tr>
+<tr><td>接受度(很喜欢)</td><td>${A.filter(d=>d.ac==='很喜欢').length}人</td><td>${B.filter(d=>d.ac==='很喜欢').length}人</td></tr>
+<tr><td>核心评分均值</td><td>体感强度 ${avgBI}分</td><td>咽喉缓解 ${avgTR}分</td></tr>
+<tr><td>最常见反应</td><td>发麻(${A.filter(d=>d.nu==='是').length}/7=57%)</td><td>清凉感(${B.filter(d=>d.cf==='是').length}/7=86%)</td></tr>
+<tr><td>最大槽点</td><td>空腹不适/体感过强</td><td>中药味/烟草味</td></tr>
+<tr><td>愿再使用</td><td>—</td><td>${B.filter(d=>d.ru==='是').length}/${cB}</td></tr>
+<tr><td>产品定位</td><td>强体感验证型</td><td>日常润喉养护型</td></tr>
+</table></div></div>`);
+
+// Recommendations
+S(`<div class="slide"><div class="content"><h3>💡 综合建议</h3>
+<div class="insight r"><b>产品A 改进方向</b><br>① 标注"建议饭后饮用"，避免空腹反应<br>② 降低发麻率（当前57%），优化配方温和度<br>③ 针对年长人群（50+）考虑减量版<br>④ 李斐反馈"体感太弱，感觉还得增强" → 提供不同浓度选择</div>
+<div class="insight g"><b>产品B 改进方向</b><br>① 优化口感：减少中药苦味/烟草味，增加清凉感<br>② 李斐"一点感觉都没有" → 提升配方浓度或即时反馈<br>③ 陶维柏建议"有点清凉的感觉" → 可考虑薄荷调香</div>
+<div class="insight"><b>组合策略</b><br>两款产品互补：产品A做体感验证（强效版），产品B做日常养护（温和版）。建议推出"体验套装"捆绑销售。</div>
+</div></div>`);
+
+// Thanks
+S(`<div class="slide cover"><div style="text-align:center"><h1>感谢<span>体验</span></h1><div style="font-size:18px;margin:20px 0;opacity:0.7">10位体验者的真实反馈<br>是产品迭代的最宝贵资产</div><div style="font-size:14px;opacity:0.5;margin-top:40px">亲本靓丽品牌运营中心 · 2026年7月</div></div></div>`);
+
+// ==================== RENDER ====================
+function initSlides(){
+  document.getElementById('slides').innerHTML = SLIDES.join('');
+  updatePageNum();
+  // Init charts after DOM ready
+  setTimeout(initCharts, 200);
+}
+
+function updatePageNum(){
+  document.getElementById('pagenum').textContent = (currentSlide+1) + ' / ' + SLIDES.length;
+}
+
+function goToSlide(idx){
+  if(idx<0||idx>=SLIDES.length) return;
+  const all = document.querySelectorAll('.slide');
+  all[currentSlide].classList.remove('active');
+  currentSlide = idx;
+  all[currentSlide].classList.add('active');
+  updatePageNum();
+}
+
+function nextSlide(){ goToSlide(currentSlide+1) }
+function prevSlide(){ goToSlide(currentSlide-1) }
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){ e.preventDefault(); nextSlide() }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); prevSlide() }
+});
+
+// Touch support
+let touchY;
+document.addEventListener('touchstart',e=>{touchY=e.touches[0].clientY});
+document.addEventListener('touchend',e=>{
+  if(!touchY) return;
+  const diff = touchY - e.changedTouches[0].clientY;
+  if(Math.abs(diff)>50){ if(diff>0) nextSlide(); else prevSlide() }
+  touchY=null;
+});
+
+// ==================== CHARTS ====================
+function initCharts(){
+  const C={r:'#B8453A',ro:'#D4795E',g:'#5A9E7E',t:'#4A8A9E',a:'#E8A838'};
+  Chart.defaults.font.family='"PingFang SC","Microsoft YaHei",sans-serif';
+
+  // Charts are initialized only when their slide has been reached
+  // We use a simple approach: create charts on first render
+  const chartInits = {};
+
+  function tryChart(id, fn){
+    const el = document.getElementById(id);
+    if(el && !chartInits[id]){ chartInits[id]=true; fn(el); }
+  }
+
+  // A1 - Acceptance doughnut
+  tryChart('c_a1', el=>{
+    const m={};A.forEach(d=>{if(d.ac)m[d.ac]=(m[d.ac]||0)+1});
+    new Chart(el,{type:'doughnut',data:{labels:Object.keys(m),datasets:[{data:Object.values(m),backgroundColor:[C.g,C.a,C.ro,C.r],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}}}});
+  });
+
+  // A2 - Body reactions
+  tryChart('c_a2', el=>{
+    const rx=['发热','发红','发痒','发麻','出汗','心跳'];
+    const fs=['fv','rd','it','nu','sw','hb'];
+    const yes=fs.map(f=>A.filter(d=>d[f]==='是').length);
+    new Chart(el,{type:'bar',data:{labels:rx,datasets:[
+      {label:'有反应',data:yes,backgroundColor:[C.r,C.ro,C.a,C.r,C.ro,C.a],borderRadius:8}
+    ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:8,ticks:{stepSize:1}}},plugins:{legend:{display:false}}}});
+  });
+
+  // A3 - Intensity vs comfort
+  tryChart('c_a3', el=>{
+    const filled = A.filter(d=>typeof d.bi==='number');
+    const cmMap={'非常舒适':5,'舒适':4,'一般':3,'有些不舒服':2,'很不舒服':1};
+    new Chart(el,{type:'bar',data:{labels:filled.map((_,i)=>N[i]),datasets:[
+      {label:'体感强度(1-5)',data:filled.map(d=>d.bi),backgroundColor:C.r,borderRadius:6},
+      {label:'舒适度(5=非常舒适)',data:filled.map(d=>cmMap[d.cm]||0),backgroundColor:'rgba(90,158,126,0.4)',borderColor:C.g,borderWidth:2,borderRadius:6}
+    ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:6,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+  });
+
+  // B1 - Acceptance
+  tryChart('c_b1', el=>{
+    const m={};B.forEach(d=>{if(d.ac)m[d.ac]=(m[d.ac]||0)+1});
+    new Chart(el,{type:'doughnut',data:{labels:Object.keys(m),datasets:[{data:Object.values(m),backgroundColor:[C.g,C.a,C.ro,C.r],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}}}});
+  });
+
+  // B2 - Scores
+  tryChart('c_b2', el=>{
+    const filled = N.filter((_,i)=>B[i].ac);
+    new Chart(el,{type:'bar',data:{labels:filled,datasets:[
+      {label:'咽喉干涩缓解',data:B.filter(d=>d.ac).map(d=>d.tr||0),backgroundColor:C.g,borderRadius:6},
+      {label:'呼吸顺畅提升',data:B.filter(d=>d.ac).map(d=>d.br||0),backgroundColor:C.t,borderRadius:6}
+    ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:5,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+  });
+
+  // B3 - Duration
+  tryChart('c_b3', el=>{
+    const filled=B.filter(d=>d.ac&&d.dr);
+    new Chart(el,{type:'bar',data:{labels:filled.map((_,i)=>N[i]),datasets:[{label:'舒适感持续(分钟)',data:filled.map(d=>Number(d.dr)),backgroundColor:[C.g,C.g,C.g,C.a,C.g,C.g,C.g],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  });
+
+  // B4 - After 30min
+  tryChart('c_b4', el=>{
+    const m={};B.forEach(d=>{if(d.a30)m[d.a30]=(m[d.a30]||0)+1});
+    new Chart(el,{type:'doughnut',data:{labels:Object.keys(m),datasets:[{data:Object.values(m),backgroundColor:[C.g,C.t,C.a,C.ro],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true}}}}});
+  });
+}
+
+// Init charts whenever we switch slides
+const origGoTo = goToSlide;
+goToSlide = function(idx){
+  origGoTo(idx);
+  setTimeout(initCharts, 300);
+};
+
+initSlides();
+</script>
+</body>
+</html>
