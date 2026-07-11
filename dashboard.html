@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亲本靓丽 · 产品体验深度分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --red: #B8453A; --rose: #D4795E; --gold: #C49A4C;
+  --green: #5A9E7E; --teal: #4A8A9E; --amber: #E8A838;
+  --bg: #F7F2EB; --card: #FFFCF8; --dark: #3D2B1F;
+  --muted: #A6988A; --border: #E8DDD2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--dark);padding:0}
+.header{
+  background:linear-gradient(135deg,#3D2B1F 0%,#5A3D2E 50%,#3D2B1F 100%);
+  color:#E8D5B7;text-align:center;padding:36px 20px 28px;
+  position:relative;overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;top:-50%;left:-20%;width:140%;height:200%;
+  background:radial-gradient(ellipse,rgba(196,154,76,0.1) 0%,transparent 70%);
+}
+.header h1{font-size:26px;font-weight:700;position:relative;letter-spacing:0.04em}
+.header h1 span{color:var(--gold)}
+.header .sub{font-size:13px;opacity:0.65;margin-top:6px;position:relative}
+.header .date{font-size:11px;opacity:0.45;margin-top:4px;position:relative}
+.container{max-width:1400px;margin:0 auto;padding:20px 24px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{
+  background:var(--card);border-radius:18px;padding:22px 20px;
+  box-shadow:0 2px 16px rgba(61,43,31,0.06);border:1px solid var(--border);
+}
+.card.full{grid-column:1/-1}
+.card h3{
+  font-size:16px;margin-bottom:16px;padding-bottom:10px;
+  border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px;
+}
+.card h3 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.red{background:var(--red)}.dot.green{background:var(--green)}.dot.gold{background:var(--gold)}
+.chart-wrap{position:relative;height:300px}
+.chart-wrap.tall{height:400px}
+.chart-wrap.short{height:240px}
+canvas{width:100%!important}
+.kpi-row{display:flex;gap:14px;flex-wrap:wrap}
+.kpi{
+  flex:1;min-width:120px;text-align:center;
+  background:linear-gradient(135deg,#FDF9F3,#FDF6ED);border-radius:14px;padding:20px 14px;
+  border:1px solid var(--border);
+}
+.kpi .val{font-size:32px;font-weight:700}
+.kpi .val.red{color:var(--red)}.kpi .val.green{color:var(--green)}.kpi .val.gold{color:var(--gold)}.kpi .val.teal{color:var(--teal)}
+.kpi .lbl{font-size:12px;color:var(--muted);margin-top:6px}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.split{grid-template-columns:1fr}}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:500}
+.tag.g{background:#E6F0E8;color:var(--green)}
+.tag.r{background:#FBE8E4;color:var(--red)}
+.tag.a{background:#FDF0ED;color:var(--amber)}
+.insight-box{
+  background:linear-gradient(135deg,#FDF9F3,#FDF6ED);
+  border-left:4px solid var(--gold);border-radius:0 14px 14px 0;
+  padding:16px 20px;margin-bottom:12px;font-size:14px;line-height:1.9;
+}
+.insight-box.red{border-left-color:var(--red)}
+.insight-box.green{border-left-color:var(--green)}
+.comment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.comment{
+  background:#FDF9F3;border-radius:12px;padding:14px 16px;font-size:13px;
+  border:1px solid var(--border);
+}
+.comment .who{font-weight:600;color:var(--red);margin-bottom:4px}
+.comment .who.g{color:var(--green)}
+.comment .txt{color:var(--dark);line-height:1.7}
+.footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>亲本<span>靓丽</span> · 产品体验深度分析</h1>
+  <div class="sub">产品A「活体验报告」+ 产品B「润体验报告」— 10位体验者全维度数据</div>
+  <div class="date">报告生成：2026年7月10日</div>
+</div>
+
+<div class="container">
+
+<!-- ====== KPI ROW ====== -->
+<div class="card full">
+  <h3><span class="dot gold"></span>核心指标总览</h3>
+  <div class="kpi-row">
+    <div class="kpi"><div class="val red" id="k0">-</div><div class="lbl">产品A 完成率</div></div>
+    <div class="kpi"><div class="val green" id="k1">-</div><div class="lbl">产品B 完成率</div></div>
+    <div class="kpi"><div class="val gold" id="k2">-</div><div class="lbl">双产品均完成</div></div>
+    <div class="kpi"><div class="val red" id="k3">-</div><div class="lbl">产品A 体感强度均值</div><div class="sub">1-5分</div></div>
+    <div class="kpi"><div class="val green" id="k4">-</div><div class="lbl">产品B 咽喉缓解均值</div><div class="sub">1-5分</div></div>
+    <div class="kpi"><div class="val gold" id="k5">-</div><div class="lbl">产品B 满意度均值</div><div class="sub">1-5分</div></div>
+    <div class="kpi"><div class="val teal" id="k6">-</div><div class="lbl">愿意再次使用</div></div>
+  </div>
+</div>
+
+<!-- ====== ROW 1: 接受度对比 ====== -->
+<div class="split">
+  <div class="card">
+    <h3><span class="dot red"></span>产品A · 整体接受度分布</h3>
+    <div class="chart-wrap"><canvas id="c1"></canvas></div>
+  </div>
+  <div class="card">
+    <h3><span class="dot green"></span>产品B · 整体接受度分布</h3>
+    <div class="chart-wrap"><canvas id="c2"></canvas></div>
+  </div>
+</div>
+
+<!-- ====== ROW 2: 体感雷达 + 评分对比 ====== -->
+<div class="split">
+  <div class="card">
+    <h3><span class="dot red"></span>产品A · 体感反应热力分析</h3>
+    <div class="chart-wrap tall"><canvas id="c3"></canvas></div>
+  </div>
+  <div class="card">
+    <h3><span class="dot green"></span>产品B · 咽喉缓解 & 呼吸顺畅 按人对比</h3>
+    <div class="chart-wrap tall"><canvas id="c4"></canvas></div>
+  </div>
+</div>
+
+<!-- ====== ROW 3: 个体雷达 ====== -->
+<div class="card full">
+  <h3><span class="dot gold"></span>产品A · 个体体感雷达图（已填写者）</h3>
+  <div class="grid3" id="radarGrid"></div>
+</div>
+
+<!-- ====== ROW 4: 舒适度 vs 满意度 ====== -->
+<div class="split">
+  <div class="card">
+    <h3><span class="dot red"></span>产品A · 体感强度 vs 舒适度关系</h3>
+    <div class="chart-wrap"><canvas id="c5"></canvas></div>
+  </div>
+  <div class="card">
+    <h3><span class="dot green"></span>产品B · 持久度分析</h3>
+    <div class="chart-wrap"><canvas id="c6"></canvas></div>
+  </div>
+</div>
+
+<!-- ====== ROW 5: 深度洞察 ====== -->
+<div class="card full">
+  <h3><span class="dot gold"></span>关键发现与建议</h3>
+  <div id="insights"></div>
+</div>
+
+<!-- ====== ROW 6: 体验者原声 ====== -->
+<div class="card full">
+  <h3><span class="dot gold"></span>体验者原声 · 关键反馈</h3>
+  <div class="comment-grid" id="comments"></div>
+</div>
+
+</div>
+
+<div class="footer">亲本靓丽品牌运营中心 © 2026 · AI 辅助数据分析 · 数据来源：10位体验者实测</div>
+
+<script>
+// ==================== DATA ====================
+const N = ['王佳钰','晴蘭','崋扬','邓婷','王家棋','唐贝贝','刘秀玲','李斐','陶维柏','郭雯浩'];
+
+const A = [
+  {ac:'可以接受',fv:'是',fvP:'面部',fvI:'中度',rd:'否',it:'否',pa:'否',nu:'是',nuP:'头部',nuI:'轻微',sw:'否',hb:'否',bi:1,cm:'非常舒适',px:'完全可接受',sg:'无',ta:'无明显特征，带回甘'},
+  {ac:'可以接受',fv:'是',fvP:'面部、手部',fvI:'',rd:'是',rdP:'面部、脖子、手和腿',rdD:'',it:'是',itP:'全身',itI:'',pa:'否',nu:'否',sw:'否',hb:'否',bo:'心脏揪着疼',bi:4,cm:'一般',px:'勉强可接受',sg:'无',ta:'回甘'},
+  {ac:'',fv:'',rd:'',it:'',pa:'',nu:'',sw:'',hb:'',bi:'',cm:'',px:'',sg:'',ta:''},
+  {ac:'',fv:'',rd:'',it:'',pa:'',nu:'',sw:'',hb:'',bi:'',cm:'',px:'',sg:'',ta:''},
+  {ac:'',fv:'',rd:'',it:'',pa:'',nu:'',sw:'',hb:'',bi:'',cm:'',px:'',sg:'',ta:''},
+  {ac:'可以接受',fv:'',rd:'是',rdP:'耳朵',rdD:'微红',it:'否',pa:'否',nu:'是',nuP:'耳朵、手部关节',nuI:'轻微',sw:'否',hb:'否',bi:4,cm:'非常舒适',px:'完全可接受',sg:'无',ta:'有回甘'},
+  {ac:'不太喜欢',fv:'是',fvP:'面部四肢',fvI:'轻微',rd:'是',rdP:'四肢',rdD:'微红',it:'是',itP:'脚、胳膊',itI:'轻微',pa:'否',nu:'是',nuP:'额头、脚趾、手',nuI:'轻微',sw:'否',hb:'否',bo:'空腹头晕目眩恶心反酸',bi:2,cm:'有些不舒服',px:'完全可接受',sg:'肠胃不好不建议空腹喝',ta:'中草药味浓郁，回甘甜腻'},
+  {ac:'可以接受',fv:'否',rd:'否',it:'是',itP:'脸',itI:'轻微',pa:'否',nu:'是',nuP:'脸',nuI:'轻微',sw:'否',hb:'否',bo:'十分钟后微麻微痒，一两分钟消失',bi:1,cm:'舒适',px:'完全可接受',sg:'感觉还得增强一些',ta:'回甘但有点涩'},
+  {ac:'很喜欢',fv:'是',fvP:'面部',fvI:'轻微',rd:'否',it:'是',itP:'脸部',itI:'轻微',pa:'否',nu:'否',sw:'否',hb:'否',bo:'无明显体感',bi:5,cm:'舒适',px:'完全可接受',sg:'产品良好，可以接受',ta:'甜味较多，回甘清甜'},
+  {ac:'',fv:'',rd:'',it:'',pa:'',nu:'',sw:'',hb:'',bi:'',cm:'',px:'',sg:'',ta:''},
+];
+
+const B = [
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'轻微',sl:'否',ph:'无变化',dr:5,a30:'已恢复',st:4,ru:'是',bs:'无',ws:'无',sg:'无',ta:'很浓的中药味'},
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'轻微',sl:'否',ph:'无变化',dr:5,a30:'仍滋润',st:4,ru:'是',bs:'无',ws:'无',sg:'无',ta:'很重的中药味'},
+  {ac:'',tr:'',br:'',cf:'',cfI:'',sl:'',ph:'',dr:'',a30:'',st:'',ru:'',bs:'',ws:'',sg:'',ta:''},
+  {ac:'不太喜欢',tr:3,br:'',cf:'是',cfI:'中度',sl:'否',ph:'无变化',dr:15,a30:'已恢复',st:4,ru:'不确定',bs:'',ws:'',sg:'个人不喜欢这个口感',ta:''},
+  {ac:'',tr:'',br:'',cf:'',cfI:'',sl:'',ph:'',dr:'',a30:'',st:'',ru:'',bs:'',ws:'',sg:'',ta:''},
+  {ac:'可以接受',tr:3,br:2,cf:'是',cfI:'轻微',sl:'否',ph:'无变化',dr:10,a30:'已恢复',st:4,ru:'是',bs:'润喉效果显著',ws:'无',sg:'无',ta:'易接受，带回甘，口感平滑'},
+  {ac:'可以接受',tr:4,br:4,cf:'是',cfI:'中度',sl:'否',ph:'无变化',dr:10,a30:'已恢复',st:3,ru:'是',bs:'比较清爽不黏腻',ws:'喝完回甘发苦烟草味太重',sg:'口感有所改善但依旧难喝，接受度一般',ta:'口感清润，烟草味浓郁'},
+  {ac:'可以接受',tr:2,br:2,cf:'否',cfI:'',sl:'否',ph:'无变化',dr:'',a30:'已恢复',st:2,ru:'不确定',bs:'',ws:'',sg:'没有感觉，一点感觉都没有',ta:'有一股不明味道'},
+  {ac:'可以接受',tr:4,br:3,cf:'是',cfI:'轻微',sl:'否',ph:'无变化',dr:10,a30:'略干',st:4,ru:'是',bs:'无',ws:'有点苦',sg:'建议可以改的有点清凉的感觉',ta:'有点发苦'},
+  {ac:'',tr:'',br:'',cf:'',cfI:'',sl:'',ph:'',dr:'',a30:'',st:'',ru:'',bs:'',ws:'',sg:'',ta:''},
+];
+
+// Ages & genders
+const ages = [30,52,null,26,24,25,30,33,28,null];
+const genders = ['女','女','','女','女','女','女','男','男',''];
+
+// ==================== COMPUTED ====================
+const cA = A.filter(d=>d.ac).length;
+const cB = B.filter(d=>d.ac).length;
+const both = N.filter((_,i)=>A[i].ac&&B[i].ac).length;
+const biVals = A.filter(d=>typeof d.bi==='number').map(d=>d.bi);
+const avgBI = (biVals.reduce((a,b)=>a+b,0)/biVals.length).toFixed(1);
+const trVals = B.filter(d=>typeof d.tr==='number').map(d=>d.tr);
+const avgTR = (trVals.reduce((a,b)=>a+b,0)/trVals.length).toFixed(1);
+const stVals = B.filter(d=>typeof d.st==='number').map(d=>d.st);
+const avgST = (stVals.reduce((a,b)=>a+b,0)/stVals.length).toFixed(1);
+const reuseY = B.filter(d=>d.ru==='是').length;
+
+document.getElementById('k0').textContent=cA+'/10';
+document.getElementById('k1').textContent=cB+'/10';
+document.getElementById('k2').textContent=both+'人';
+document.getElementById('k3').textContent=avgBI;
+document.getElementById('k4').textContent=avgTR;
+document.getElementById('k5').textContent=avgST;
+document.getElementById('k6').textContent=reuseY+'人';
+
+// ==================== CHARTS ====================
+const C={r:'#B8453A',ro:'#D4795E',gd:'#C49A4C',g:'#5A9E7E',t:'#4A8A9E',a:'#E8A838',bg:'#FDF9F3'};
+Chart.defaults.font.family='"PingFang SC","Microsoft YaHei",sans-serif';
+Chart.defaults.font.size=12;
+
+// C1: A acceptance
+(function(){
+  const m={'很喜欢':0,'可以接受':0,'不太喜欢':0,'难以接受':0};
+  A.forEach(d=>{if(d.ac)m[d.ac]++});
+  new Chart(document.getElementById('c1'),{type:'doughnut',data:{labels:Object.keys(m),datasets:[{data:Object.values(m),backgroundColor:[C.g,C.a,C.ro,C.r],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:18,usePointStyle:true,pointRadius:6}}}}});
+})();
+
+// C2: B acceptance
+(function(){
+  const m={'很喜欢':0,'可以接受':0,'不太喜欢':0,'难以接受':0};
+  B.forEach(d=>{if(d.ac)m[d.ac]++});
+  new Chart(document.getElementById('c2'),{type:'doughnut',data:{labels:Object.keys(m),datasets:[{data:Object.values(m),backgroundColor:[C.g,C.a,C.ro,C.r],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:18,usePointStyle:true,pointRadius:6}}}}});
+})();
+
+// C3: Body reaction heat map (stacked bar)
+(function(){
+  const reactions = ['发热','发红','发痒','发麻','出汗','心跳'];
+  const fields = ['fv','rd','it','nu','sw','hb'];
+  const yes = fields.map(f=>A.filter(d=>d[f]==='是').length);
+  const no = fields.map(f=>A.filter(d=>d[f]==='否').length);
+  new Chart(document.getElementById('c3'),{type:'bar',data:{labels:reactions,datasets:[
+    {label:'有反应',data:yes,backgroundColor:C.r,borderRadius:8},
+    {label:'无反应',data:no,backgroundColor:'#E8DDD2',borderRadius:8}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true,max:10,ticks:{stepSize:2}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+})();
+
+// C4: B scores by person
+(function(){
+  const filled = N.filter((_,i)=>B[i].ac);
+  new Chart(document.getElementById('c4'),{type:'bar',data:{labels:filled,datasets:[
+    {label:'咽喉干涩缓解',data:B.filter(d=>d.ac).map(d=>d.tr||0),backgroundColor:C.g,borderRadius:6},
+    {label:'呼吸顺畅感提升',data:B.filter(d=>d.ac).map(d=>d.br||0),backgroundColor:C.t,borderRadius:6}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:5,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+})();
+
+// C5: Body intensity vs comfort (scatter-like bar)
+(function(){
+  const cmOrder = ['非常舒适','舒适','一般','有些不舒服','很不舒服'];
+  const filled = A.filter(d=>typeof d.bi==='number');
+  new Chart(document.getElementById('c5'),{type:'bar',data:{labels:filled.map((_,i)=>N[i]),datasets:[
+    {label:'体感强度(1-5)',data:filled.map(d=>d.bi),backgroundColor:C.r,borderRadius:6,yAxisID:'y'},
+    {label:'舒适度(越高越好)',data:filled.map(d=>5-cmOrder.indexOf(d.cm)),backgroundColor:'rgba(90,158,126,0.3)',borderColor:C.g,borderWidth:2,borderRadius:6,yAxisID:'y1'}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{type:'linear',position:'left',max:6,ticks:{stepSize:1},title:{display:true,text:'体感强度'}},y1:{type:'linear',position:'right',max:6,ticks:{stepSize:1, callback: v=>['','很不舒服','有些不舒服','一般','舒适','非常舒适'][v]||''},grid:{drawOnChartArea:false},title:{display:true,text:'舒适度'}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+})();
+
+// C6: B duration
+(function(){
+  new Chart(document.getElementById('c6'),{type:'bar',data:{labels:N.filter((_,i)=>B[i].ac&&B[i].dr),datasets:[
+    {label:'舒适感持续(分钟)',data:B.filter(d=>d.ac&&d.dr).map(d=>Number(d.dr)||0),backgroundColor:[C.g,C.g,C.g,C.a,C.g,C.g,C.g],borderRadius:8}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'分钟'}}},plugins:{legend:{display:false}}}});
+  // After-30min status
+  const a30s={};
+  B.forEach(d=>{if(d.a30)a30s[d.a30]=(a30s[d.a30]||0)+1});
+  const container=document.getElementById('c6').parentElement;
+  const div=document.createElement('div');
+  div.style.cssText='margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;';
+  div.innerHTML=Object.entries(a30s).map(([k,v])=>`<span style="background:#FDF9F3;padding:6px 14px;border-radius:16px;font-size:12px;"><b>${k}</b>：${v}人</span>`).join('');
+  container.appendChild(div);
+})();
+
+// ==================== INDIVIDUAL RADARS ====================
+(function(){
+  const filled = A.map((d,i)=>({...d,idx:i})).filter(d=>d.ac);
+  const grid = document.getElementById('radarGrid');
+  filled.forEach(d=>{
+    const canvasId = 'radar_'+d.idx;
+    const reactions = {
+      '发热':d.fv==='是'?5:1,
+      '发红':d.rd==='是'?5:1,
+      '发痒':d.it==='是'?5:1,
+      '发麻':d.nu==='是'?5:1,
+      '痛感':d.pa==='是'?5:1,
+    };
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText='background:#FDF9F3;border-radius:14px;padding:14px;text-align:center;';
+    wrapper.innerHTML=`<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#B8453A">${N[d.idx]} · ${ages[d.idx]}岁 ${genders[d.idx]} · 强度${d.bi}分</div><div style="height:200px"><canvas id="${canvasId}"></canvas></div>`;
+    grid.appendChild(wrapper);
+    setTimeout(()=>{
+      new Chart(document.getElementById(canvasId),{type:'radar',data:{labels:Object.keys(reactions),datasets:[{label:'体感强度',data:Object.values(reactions),backgroundColor:'rgba(184,69,58,0.1)',borderColor:C.r,borderWidth:2,pointBackgroundColor:C.r,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:5,ticks:{stepSize:1,display:false},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});
+    },100);
+  });
+})();
+
+// ==================== INSIGHTS ====================
+(function(){
+  const avgIntA = (A.filter(d=>typeof d.bi==='number').reduce((a,b)=>a+b.bi,0)/cA).toFixed(1);
+  const numbness = A.filter(d=>d.nu==='是').length;
+  const itching = A.filter(d=>d.it==='是').length;
+  const fever = A.filter(d=>d.fv==='是').length;
+  const redness = A.filter(d=>d.rd==='是').length;
+  const cmOK = A.filter(d=>d.cm==='非常舒适'||d.cm==='舒适').length;
+  const avgBrB = (B.filter(d=>typeof d.br==='number').reduce((a,b)=>a+b.br,0)/cB).toFixed(1);
+  const cfCount = B.filter(d=>d.cf==='是').length;
+  const avgDrB = B.filter(d=>d.dr).reduce((a,b)=>a+Number(b.dr),0)/B.filter(d=>d.dr).length;
+
+  document.getElementById('insights').innerHTML=`
+<div class="insight-box red">
+  <strong>🔴 产品A（活体验报告）核心发现</strong><br>
+  • 完成率 <b>${cA}/10</b>，整体接受度以"可以接受"为主（${A.filter(d=>d.ac==='可以接受').length}人），1人"很喜欢"，1人"不太喜欢"<br>
+  • 体感强度均值 <b>${avgIntA}分</b>，个体差异大(1-5分)；<b>${cmOK}人</b>感到舒适/非常舒适<br>
+  • 最常见体感：<b>发麻 ${numbness}人</b> > 发痒 ${itching}人 > 发热 ${fever}人 > 发红 ${redness}人<br>
+  • <b>晴蘭(52岁)</b>体感最强烈(4分)：面部/脖子/四肢发红，全身发痒，心脏揪着疼 → 建议关注年长体验者耐受度<br>
+  • <b>刘秀玲</b>空腹饮用后头晕恶心反酸，<b>必须标注"建议饭后饮用"</b><br>
+  • <b>李斐(33岁男)</b>体感极弱(1分)：仅轻微脸麻，建议增强配方
+</div>
+
+<div class="insight-box green">
+  <strong>🟢 产品B（润体验报告）核心发现</strong><br>
+  • 完成率 <b>${cB}/10</b>，"可以接受"占主导（${B.filter(d=>d.ac==='可以接受').length}人），1人"不太喜欢"<br>
+  • 咽喉干涩缓解均值 <b>${avgTR}分</b>，呼吸顺畅提升均值 <b>${avgBrB}分</b><br>
+  • <b>${cfCount}人</b>有清凉/滋润感，舒适感持续均值 <b>${avgDrB.toFixed(0)}分钟</b><br>
+  • <b>${reuseY}人</b>愿意再次使用，2人不确定（邓婷、李斐）<br>
+  • 主要槽点：<b>中药味/烟草味偏重</b>（王佳钰、晴蘭、刘秀玲、陶维柏均有提及）<br>
+  • 李斐(33岁男)满意度最低(2分)："没有感觉，一点感觉都没有" → 需求清凉感
+</div>
+
+<div class="insight-box">
+  <strong>💡 综合建议</strong><br>
+  • <b>配方优化</b>：产品A需降低发麻发痒率（${numbness}/7=43%）；产品B需增强清凉感和掩盖中药苦味<br>
+  • <b>产品互补</b>：两款产品搭配使用可覆盖"体感+润喉"双需求，<b>${both}人</b>已完成双产品体验<br>
+  • <b>未完成者</b>：崋扬、王家棋、郭雯浩 3人尚未填写任何数据，建议催促补填<br>
+  • <b>差异化定位</b>：产品A偏"体感追踪"，产品B偏"润喉养护"，人群可差异化推荐
+</div>`;
+})();
+
+// ==================== COMMENTS ====================
+(function(){
+  const cmts = [
+    {w:'刘秀玲',p:'A',t:'空腹喝完头晕目眩恶心想吐肠胃反酸，肠胃不好不建议空腹喝'},
+    {w:'刘秀玲',p:'B',t:'口感较之前有所改善，但是依旧难喝接受度一般。喝完回甘发苦烟草味儿太重'},
+    {w:'晴蘭',p:'A',t:'心脏揪着疼，全身发痒。体感强烈但可勉强接受'},
+    {w:'李斐',p:'A',t:'刚开始喝没有感觉，过了十分钟脸上才有一点麻痒，一两分钟就没了。感觉还得增强一些'},
+    {w:'李斐',p:'B',t:'没有感觉，一点感觉都没有'},
+    {w:'陶维柏',p:'A',t:'甜味较多无异味，回甘清甜。产品良好，可以接受'},
+    {w:'陶维柏',p:'B',t:'有点发苦，建议可以改的有点清凉的感觉'},
+    {w:'唐贝贝',p:'B',t:'润喉效果显著，易接受，带回甘，口感平滑'},
+    {w:'王佳钰',p:'B',t:'很浓的中药味，咽喉缓解4分，呼吸顺畅4分'},
+    {w:'邓婷',p:'B',t:'个人不喜欢这个口感，但满意度给4分。不确定是否会再次使用'},
+    {w:'王家棋',p:'A',t:'(仅填了个人信息，未完成体验)'},
+  ];
+  document.getElementById('comments').innerHTML=cmts.map(c=>
+    `<div class="comment"><div class="who ${c.p==='B'?'g':''}">${c.w} · 产品${c.p}</div><div class="txt">${c.t}</div></div>`
+  ).join('');
+})();
+</script>
+</body>
+</html>
