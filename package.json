@@ -1,0 +1,12 @@
+{
+  "name": "qinben-data-collection",
+  "version": "1.0.0",
+  "description": "亲本靓丽 · 产品体验数据收集系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
