@@ -9,7 +9,7 @@ const os = require('os');
 
 const PORT = process.env.PORT || 8080;
 const SERVER_DIR = __dirname;
-const DATA_FILE = path.join(SERVER_DIR, 'data.json');
+const DATA_FILE = process.env.VERCEL ? '/tmp/data.json' : path.join(SERVER_DIR, 'data.json');
 
 // ── MIME ───────────────────────────────────────────────
 const MIME = {
@@ -296,7 +296,13 @@ console.log('  ║  🛑 按 Ctrl+C 停止服务器                 ║');
 console.log('  ╚══════════════════════════════════════════╝');
 console.log('');
 
-const server = http.createServer(handleRequest);
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`  ✅ 服务器已启动，等待连接...\n`);
-});
+// Export for Vercel serverless
+module.exports = handleRequest;
+
+// Standalone mode (not on Vercel)
+if (!process.env.VERCEL) {
+  const server = http.createServer(handleRequest);
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`  ✅ 服务器已启动，等待连接...\n`);
+  });
+}
