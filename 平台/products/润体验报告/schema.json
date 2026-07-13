@@ -1,0 +1,85 @@
+{
+  "id": "moist-report",
+  "name": "润体验报告",
+  "icon": "💧",
+  "color": "#5A9E7E",
+  "description": "咽喉润感追踪 — 干涩缓解/呼吸顺畅/清凉滋润/生津",
+  "testerPool": ["王佳钰","晴蘭","崋扬","邓婷","王家棋","唐贝贝","刘秀玲","李斐","陶维柏","郭雯浩"],
+  "sections": [
+    {
+      "id":"profile",
+      "title":"体验者信息",
+      "icon":"👤",
+      "fields":[
+        {"id":"name","label":"姓名","type":"tester-select","required":true},
+        {"id":"age","label":"年龄","type":"number","suffix":"岁","required":true,"min":1,"max":120},
+        {"id":"gender","label":"性别","type":"select","options":["男","女","其他"],"required":true},
+        {"id":"date","label":"体验日期","type":"date","required":true}
+      ]
+    },
+    {
+      "id":"condition",
+      "title":"测试条件",
+      "icon":"🧪",
+      "fields":[
+        {"id":"drinkMonth","label":"饮用时间（月）","type":"number","min":1,"max":12,"width":"half"},
+        {"id":"drinkDay","label":"饮用时间（日）","type":"number","min":1,"max":31,"width":"half"},
+        {"id":"drinkHour","label":"饮用时间（时）","type":"number","min":0,"max":23,"width":"half"},
+        {"id":"drinkMin","label":"饮用时间（分）","type":"number","min":0,"max":59,"width":"half"},
+        {"id":"smokeMinutes","label":"饮用前吸烟量","type":"inline","inlineTemplate":"最近{smokeMinutes}分钟内吸了{smokeCount}支烟","subFields":[
+          {"id":"smokeMinutes","label":"分钟","type":"number","width":60},
+          {"id":"smokeCount","label":"支","type":"number","width":60}
+        ]}
+      ]
+    },
+    {
+      "id":"taste",
+      "title":"口感评价",
+      "icon":"👅",
+      "hint":"喝的时候填",
+      "fields":[
+        {"id":"smoothB","label":"是否顺滑","type":"yesno"},
+        {"id":"throatIrritation","label":"是否呛喉","type":"conditional","subFields":[{"id":"throatIrritationIntensity","label":"呛喉强度","type":"select","options":["轻微","明显"]}]},
+        {"id":"tasteOtherB","label":"其他口感描述","type":"textarea"},
+        {"id":"sweetAfter","label":"是否回甘","type":"yesno"},
+        {"id":"acceptanceB","label":"整体接受度","type":"select","options":["很喜欢","可以接受","不太喜欢","难以接受"],"required":true}
+      ]
+    },
+    {
+      "id":"effect",
+      "title":"喝后即时效果",
+      "icon":"⚡",
+      "hint":"喝后3-5分钟填",
+      "fields":[
+        {"id":"throatRelief","label":"咽喉干涩缓解程度（1-5分，5完全缓解）","type":"rating","max":5},
+        {"id":"breathImprove","label":"呼吸顺畅感提升（1-5分）","type":"rating","max":5},
+        {"id":"coolFeeling","label":"喉咙是否有清凉/滋润感","type":"conditional","subFields":[{"id":"coolFeelingIntensity","label":"清凉/滋润强度","type":"select","options":["轻微","中度","强烈"]}]},
+        {"id":"salivaIncrease","label":"是否生津（口水增多）","type":"yesno"},
+        {"id":"phlegmChange","label":"痰感变化","type":"select","options":["无变化","减少","增多","其他"]}
+      ]
+    },
+    {
+      "id":"duration",
+      "title":"持久度追踪",
+      "icon":"⏱️",
+      "fields":[
+        {"id":"comfortDuration","label":"舒适感持续约多久后减弱","type":"number","suffix":"分钟","min":0},
+        {"id":"after30minThroat","label":"喝后30分钟喉咙状态","type":"select","options":["仍滋润","略干","已恢复","比之前更干"]}
+      ]
+    },
+    {
+      "id":"evaluation",
+      "title":"整体评价",
+      "icon":"⭐",
+      "fields":[
+        {"id":"satisfaction","label":"整体满意度（1-5分）","type":"rating","max":5},
+        {"id":"reuseWilling","label":"是否愿意再次使用","type":"select","options":["是","否","不确定"]},
+        {"id":"bestPart","label":"最满意之处","type":"textarea","placeholder":"请描述..."},
+        {"id":"worstPart","label":"最不满意之处","type":"textarea","placeholder":"请描述..."},
+        {"id":"suggestionB","label":"其他建议","type":"textarea","placeholder":"任何建议..."}
+      ]
+    }
+  ],
+  "completionField": "suggestionB",
+  "completionLabel": "润的体验反馈"
+}
