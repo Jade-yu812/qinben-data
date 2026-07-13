@@ -1,0 +1,78 @@
+{
+  "id": "live-report",
+  "name": "活体验报告",
+  "icon": "🧪",
+  "color": "#B8453A",
+  "description": "口服体感追踪 — 发热/发红/发痒/痛感/发麻",
+  "testerPool": ["王佳钰","晴蘭","崋扬","邓婷","王家棋","唐贝贝","刘秀玲","李斐","陶维柏","郭雯浩"],
+  "sections": [
+    {
+      "id": "profile",
+      "title": "体验者信息",
+      "icon": "👤",
+      "fields": [
+        {"id":"name","label":"姓名","type":"tester-select","required":true},
+        {"id":"age","label":"年龄","type":"number","suffix":"岁","required":true,"min":1,"max":120},
+        {"id":"gender","label":"性别","type":"select","options":["男","女","其他"],"required":true},
+        {"id":"date","label":"体验日期","type":"date","required":true}
+      ]
+    },
+    {
+      "id":"condition",
+      "title":"测试条件",
+      "icon":"🧪",
+      "hint":"请确保空腹8小时以上",
+      "fields":[
+        {"id":"drinkMonth","label":"饮用时间（月）","type":"number","min":1,"max":12,"width":"half"},
+        {"id":"drinkDay","label":"饮用时间（日）","type":"number","min":1,"max":31,"width":"half"},
+        {"id":"drinkHour","label":"饮用时间（时）","type":"number","min":0,"max":23,"width":"half"},
+        {"id":"drinkMin","label":"饮用时间（分）","type":"number","min":0,"max":59,"width":"half"},
+        {"id":"fastingHours","label":"空腹时长","type":"number","hint":"小时，≥8","min":0,"max":24,"step":0.5}
+      ]
+    },
+    {
+      "id":"taste",
+      "title":"口感评价",
+      "icon":"👅",
+      "hint":"喝的时候填",
+      "fields":[
+        {"id":"sourSweet","label":"是否酸甜","type":"yesno"},
+        {"id":"bitter","label":"是否苦涩","type":"yesno"},
+        {"id":"smooth","label":"是否顺滑","type":"yesno"},
+        {"id":"foreignBody","label":"是否有异物感","type":"yesno"},
+        {"id":"tasteOther","label":"其他口感描述","type":"textarea"},
+        {"id":"aftertaste","label":"余味感受","type":"text","placeholder":"如：回甘、涩感、清凉等"},
+        {"id":"acceptance","label":"整体接受度","type":"select","options":["很喜欢","可以接受","不太喜欢","难以接受"],"required":true}
+      ]
+    },
+    {
+      "id":"body",
+      "title":"体感记录",
+      "icon":"🌡️",
+      "hint":"喝后30分钟准时填",
+      "fields":[
+        {"id":"fever","label":"是否发热","type":"conditional","subFields":[{"id":"feverPart","label":"部位","type":"text","placeholder":"如：面部、腹部、全身"},{"id":"feverIntensity","label":"强度","type":"select","options":["轻微","中度","强烈"]}]},
+        {"id":"redness","label":"是否发红","type":"conditional","subFields":[{"id":"rednessPart","label":"部位","type":"text"},{"id":"rednessDegree","label":"程度","type":"select","options":["微红","中度","明显"]}]},
+        {"id":"itching","label":"是否发痒","type":"conditional","subFields":[{"id":"itchingPart","label":"部位","type":"text"},{"id":"itchingIntensity","label":"强度","type":"select","options":["轻微","中度","强烈"]}]},
+        {"id":"pain","label":"是否有痛感","type":"conditional","subFields":[{"id":"painPart","label":"部位","type":"text"},{"id":"painIntensity","label":"强度","type":"select","options":["轻微","中度","剧烈"]},{"id":"painDuration","label":"持续性","type":"select","options":["持续性","阵发性"]}]},
+        {"id":"numbness","label":"是否发麻","type":"conditional","subFields":[{"id":"numbnessPart","label":"部位","type":"text"},{"id":"numbnessIntensity","label":"强度","type":"select","options":["轻微","中度","强烈"]}]},
+        {"id":"sweat","label":"是否出汗","type":"yesno"},
+        {"id":"heartbeat","label":"是否心跳变化","type":"yesno"},
+        {"id":"bodyOther","label":"其他体感描述","type":"textarea"}
+      ]
+    },
+    {
+      "id":"evaluation",
+      "title":"整体评价",
+      "icon":"⭐",
+      "fields":[
+        {"id":"bodyIntensity","label":"体感综合强度（1-5分，5最强）","type":"rating","max":5},
+        {"id":"comfort","label":"整体舒适度","type":"select","options":["非常舒适","舒适","一般","有些不舒服","很不舒服"]},
+        {"id":"painAcceptable","label":"痛感/发麻是否可接受","type":"select","options":["完全可接受","勉强可接受","难以接受","无法忍受"]},
+        {"id":"suggestion","label":"补充建议","type":"textarea","placeholder":"任何补充建议..."}
+      ]
+    }
+  ],
+  "completionField": "suggestion",
+  "completionLabel": "活的体验反馈"
+}
