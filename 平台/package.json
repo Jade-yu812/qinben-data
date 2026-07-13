@@ -1,0 +1,8 @@
+{
+  "name": "qinben-experience-platform",
+  "version": "2.0.0",
+  "description": "亲本靓丽品牌运营中心 · 多产品体验数据平台",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=16" }
+}
