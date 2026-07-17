@@ -50,7 +50,7 @@ function home(){
   cm.forEach(function(p){
     var d=DATA[p.name]||{}, ts=p.testers, fl=ts.filter(function(t){return d[t]&&d[t][p.cf];}).length;
     var pct=Math.round(fl/ts.length*100);
-    h+='<div class="product-card" style="border-color:'+p.color+'30"><span class="pc-tag">已结束</span><div class="pc-icon">'+p.icon+'</div><div class="pc-name" style="color:'+p.color+'">'+p.name+'</div><div class="pc-desc">'+p.desc+'</div><div class="pc-meta"><span>👥 '+ts.length+'人</span><span>📝 '+fl+'人完成</span></div><div class="pc-bar"><div class="pc-bar-inner" style="width:'+pct+'%;background:'+p.color+'"></div></div><div class="pc-actions"><a class="btn" href="dashboard.html">📊 综合报告</a></div></div>';
+    h+='<div class="product-card" style="border-color:'+p.color+'30"><span class="pc-tag">已结束</span><div class="pc-icon">'+p.icon+'</div><div class="pc-name" style="color:'+p.color+'">'+p.name+'</div><div class="pc-desc">'+p.desc+'</div><div class="pc-meta"><span>👥 '+ts.length+'人</span><span>📝 '+fl+'人完成</span></div><div class="pc-bar"><div class="pc-bar-inner" style="width:'+pct+'%;background:'+p.color+'"></div></div><div class="pc-actions"><a class="btn" href="report-live.html">📊 活体验报告</a> <a class="btn rpt" href="report-moist.html">📊 润体验报告</a> <a class="btn" href="dashboard.html">📈 综合报告</a></div></div>';
   });
   h+='</div></div>';
   h+='<div class="footer">亲本靓丽品牌运营中心 · 体验平台<br>📊 <a href="dashboard.html" style="color:var(--a)">查看综合报告</a></div>';
