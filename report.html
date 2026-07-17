@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>亲本靓丽 · 体验报告</title>
+<script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--r:#B8453A;--g:#5A9E7E;--a:#C49A4C;--bg:#FDF9F3;--dk:#3D2B1F;--mu:#A6988A}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--dk)}
+.header{background:linear-gradient(135deg,#3D2B1F,#5A3D2E,#3D2B1F);color:#E8D5B7;padding:20px;text-align:center}
+.header h1{font-size:22px}.header h1 span{color:var(--a)}.header .sub{font-size:11px;opacity:.6;margin-top:4px}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.kpi-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{flex:1;min-width:100px;background:#fff;border-radius:14px;padding:20px 14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.kpi .val{font-size:30px;font-weight:700}.kpi .lbl{font-size:11px;color:var(--mu);margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.card h3{font-size:15px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #E8DDD2}
+.chart-wrap{position:relative;height:300px}.chart-wrap.short{height:240px}
+canvas{width:100%!important}
+.insight{background:var(--bg);border-left:4px solid var(--a);border-radius:0 12px 12px 0;padding:14px 18px;margin:10px 0;font-size:14px;line-height:1.9}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--bg);padding:10px 8px;border-bottom:2px solid #E8DDD2;font-weight:600;text-align:center}
+td{padding:8px;border-bottom:1px solid #F0EBE3;text-align:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:var(--a);color:#fff;font-weight:600;text-decoration:none;font-size:13px;font-family:inherit;border:none;cursor:pointer}
+.tag{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:500}.tag.g{background:#E6F0E8;color:var(--g)}.tag.r{background:#FBE8E4;color:var(--r)}.tag.a{background:#FDF0ED;color:var(--a)}
+.footer{text-align:center;padding:24px;color:var(--mu);font-size:12px}
+@media(max-width:800px){.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.header{position:static}.btn{display:none}.card{break-inside:avoid;box-shadow:none}body{background:#fff}}</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>亲本<span>靓丽</span> · 体验数据分析报告</h1>
+  <div class="sub" id="titleSub"></div>
+</div>
+
+<div class="container" id="content"></div>
+<div class="footer">亲本靓丽品牌运营中心 · 体验数据报告</div>
+
+<script>
+// Parse URL query param
+const urlParams=new URLSearchParams(window.location.search);
+const PRODUCT=urlParams.get('product')||'活体验报告';
+const COLOR=urlParams.get('color')||'#B8453A';
+const ICON=urlParams.get('icon')||'🧪';
+
+document.getElementById('titleSub').textContent=ICON+' '+PRODUCT+' · 10位体验者全维度数据';
+
+async function load(){
+  const c=document.getElementById('content');
+  c.innerHTML='<p style="text-align:center;padding:40px;color:var(--mu)">⏳ 加载数据中...</p>';
+
+  let schema,data;
+  try{const r=await fetch('/api/schema/'+encodeURIComponent(PRODUCT));schema=await r.json();}catch(e){c.innerHTML='<p style="text-align:center;padding:40px">加载失败</p>';return;}
+  try{const r=await fetch('/api/data/'+encodeURIComponent(PRODUCT));data=await r.json();}catch(e){data={};}
+
+  const ts=schema.testerPool||[], cf=schema.completionField;
+  const allF=(schema.sections||[]).flatMap(s=>s.fields);
+  const ratF=allF.filter(f=>f.type==='rating');
+  const selF=allF.filter(f=>f.type==='select'&&f.id!=='gender'&&f.id!=='name');
+  const condF=allF.filter(f=>f.type==='conditional');
+  const fl=ts.filter(t=>data[t]&&data[t][cf]).length;
+
+  let h='';
+
+  // KPI
+  h+=`<div class="kpi-row"><div class="kpi"><div class="val" style="color:${COLOR}">${fl}/10</div><div class="lbl">完成人数</div></div>`;
+  ratF.forEach(f=>{const vs=ts.map(t=>data[t]?Number(data[t][f.id]):null).filter(v=>v!==null&&!isNaN(v));if(vs.length)h+=`<div class="kpi"><div class="val" style="color:${COLOR}">${(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1)}</div><div class="lbl">${f.label}</div></div>`;});
+  const reuseF=allF.find(f=>f.id==='reuseWilling');
+  if(reuseF){const ry=ts.filter(t=>data[t]&&data[t][reuseF.id]==='是').length;h+=`<div class="kpi"><div class="val" style="color:${COLOR}">${ry}人</div><div class="lbl">愿再次使用</div></div>`;}
+  h+=`</div>`;
+
+  // Acceptance + Body reactions
+  h+=`<div class="grid2">`;
+
+  // Acceptance
+  const acF=selF.find(f=>f.options&&f.options.includes('很喜欢'));
+  if(acF){
+    const dist={};ts.forEach(t=>{const v=data[t]?data[t][acF.id]:null;if(v)dist[v]=(dist[v]||0)+1;});
+    h+=`<div class="card"><h3>📊 ${acF.label}分布（${Object.values(dist).reduce((a,b)=>a+b,0)}人）</h3><div class="chart-wrap"><canvas id="c_accept"></canvas></div></div>`;
+    window._c_accept={labels:Object.keys(dist),values:Object.values(dist)};
+  }
+
+  // Conditional body reactions
+  if(condF.length>0){
+    const labels=[];const vals=[];
+    condF.forEach(f=>{labels.push(f.label);vals.push(ts.filter(t=>data[t]&&data[t][f.id]==='是').length);});
+    h+=`<div class="card"><h3>📊 体感/反应分布（${fl}人）</h3><div class="chart-wrap"><canvas id="c_body"></canvas></div></div>`;
+    window._c_body={labels,vals};
+  }
+
+  if(!acF&&condF.length===0)h+=`<div class="card"><h3>暂无分布数据</h3></div>`;
+
+  // Rating scores by tester
+  if(ratF.length>0){
+    h+=`<div class="card" style="grid-column:1/-1"><h3>📊 评分对比 · 按体验者</h3><div class="chart-wrap short"><canvas id="c_score"></canvas></div></div>`;
+    window._c_score={labels:ts.filter(t=>data[t]&&data[t][cf]),fields:ratF};
+  }
+  h+=`</div>`;
+
+  // Data table
+  const tblF=allF.filter(f=>['select','rating','yesno'].includes(f.type)).slice(0,10);
+  h+=`<div class="card" style="margin-top:20px"><h3>📋 数据明细</h3><div style="overflow-x:auto"><table><tr><th>姓名</th>${tblF.map(f=>'<th>'+f.label+'</th>').join('')}</tr>`;
+  ts.forEach(t=>{const td=data[t]||{};h+=`<tr><td><strong>${t}</strong></td>${tblF.map(f=>'<td>'+(td[f.id]||'-')+'</td>').join('')}</tr>`;});
+  h+=`</table></div></div>`;
+
+  // Insights
+  h+=`<div class="card" style="margin-top:20px"><h3>💡 关键发现</h3><div id="insightsArea"></div></div>`;
+
+  // Back button
+  h+=`<div style="text-align:center;margin-top:24px"><a class="btn" href="/">← 返回平台首页</a> <a class="btn" href="javascript:window.print()" style="background:#4A8A9E">📥 下载PDF</a></div>`;
+
+  c.innerHTML=h;
+  setTimeout(initCharts,300);
+}
+
+function initCharts(){
+  if(typeof Chart==='undefined') return;
+  Chart.defaults.font.family='"PingFang SC","Microsoft YaHei",sans-serif';
+  const C={r:COLOR||'#B8453A',g:'#5A9E7E',a:'#C49A4C',t:'#4A8A9E'};
+
+  if(window._c_accept){
+    new Chart(document.getElementById('c_accept'),{type:'doughnut',data:{labels:window._c_accept.labels,datasets:[{data:window._c_accept.values,backgroundColor:[C.g,C.a,'#D4795E',C.r],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}}}});
+  }
+  if(window._c_body){
+    new Chart(document.getElementById('c_body'),{type:'bar',data:{labels:window._c_body.labels,datasets:[{data:window._c_body.vals,backgroundColor:[C.r,'#D4795E',C.a,C.r,'#D4795E',C.a],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:10,ticks:{stepSize:1}}},plugins:{legend:{display:false}}}});
+  }
+  if(window._c_score){
+    const ds=window._c_score.fields.map((f,i)=>({label:f.label,data:window._c_score.labels.map(t=>Number(t[f.id]||0)),backgroundColor:[C.r,C.g,C.a,C.t][i%4],borderRadius:6}));
+    new Chart(document.getElementById('c_score'),{type:'bar',data:{labels:window._c_score.labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,scales:{y:{max:5,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true}}}}});
+  }
+
+  // Build insights
+  const ts=schema?.testerPool||[], data=_data||{}, cf=schema?.completionField;
+  const fl=ts.filter(t=>data[t]&&data[t][cf]).length;
+  let ins='';
+  const acF=(schema?.sections||[]).flatMap(s=>s.fields).find(f=>f.type==='select'&&f.options&&f.options.includes('很喜欢'));
+  if(acF){
+    const like=ts.filter(t=>data[t]&&data[t][acF.id]==='很喜欢').length;
+    const ok=ts.filter(t=>data[t]&&data[t][acF.id]==='可以接受').length;
+    const bad=ts.filter(t=>data[t]&&data[t][acF.id]==='不太喜欢'||data[t][acF.id]==='难以接受').length;
+    ins+=`<div class="insight"><b>📊 接受度</b><br>${like}人"很喜欢"，${ok}人"可以接受"，${bad}人持负面评价。`;
+    if(bad>0){ins+=` 需关注${ts.filter(t=>data[t]&&(data[t][acF.id]==='不太喜欢'||data[t][acF.id]==='难以接受')).join('、')}的反馈。`;}
+    ins+=`</div>`;
+  }
+  document.getElementById('insightsArea').innerHTML=ins||'<p style="color:var(--mu)">数据不足，无法生成洞察</p>';
+}
+
+// Store data globally for chart init
+let schema,_data;
+const origFetch=window.fetch;
+window.fetch=function(...args){
+  return origFetch.apply(this,args).then(r=>{
+    if(args[0].includes('/api/schema/')) r.clone().json().then(d=>{schema=d;});
+    if(args[0].includes('/api/data/')) r.clone().json().then(d=>{_data=d;});
+    return r;
+  });
+};
+
+load();
+</script>
+</body>
+</html>
