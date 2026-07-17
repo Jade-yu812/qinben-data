@@ -174,7 +174,7 @@ function home(){
 async function openProd(n){ CP=n; view='form'; CT=''; CF={};
   try{const prod=PF.products.find(p=>p.name===n);CP={...prod,sections:EMBEDDED_SCHEMAS[n]};}catch(e){showT('产品未找到');return;}
   try{CP._d=EMBEDDED_DATA[n]||{};}catch(e){CP._d={};}
-  try{const r=await fetch('/api/data/_exp_'+encodeURIComponent(n));CP._exp=await r.json();}catch(e){CP._exp={};}
+  try{CP._exp=JSON.parse(localStorage.getItem('qinben_exp_'+n)||'{}');}catch(e){CP._exp={};}
   CT=(CP.testerPool||[])[0]||''; render(); window.scrollTo(0,0); }
 
 function fm(){
@@ -211,7 +211,7 @@ function saveExp(){
     if(el.classList.contains('rpill')&&el.classList.contains('sel')){ CP._exp[el.parentElement.dataset.field]=el.dataset.val; return; }
     if(el.dataset.field&&!el.classList.contains('rpill')) CP._exp[el.dataset.field]=el.value;
   });
-  fetch('/api/data/_exp_'+encodeURIComponent(CP.name),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tester:'_experiment',fields:CP._exp})}).catch(()=>{});
+  localStorage.setItem('qinben_exp_'+CP.name,JSON.stringify(CP._exp));
   showT('✅ 实验数据已保存');
 }
 
