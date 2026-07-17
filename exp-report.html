@@ -8,97 +8,103 @@
 :root{--r:#B8453A;--g:#5A9E7E;--a:#C49A4C;--bg:#FDF9F3;--dk:#3D2B1F;--mu:#A6988A;--brd:#E8DDD2}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--dk);line-height:1.6}
-.header{background:linear-gradient(135deg,#3D2B1F,#5A3D2E,#3D2B1F);color:#E8D5B7;padding:24px 20px;text-align:center}
-.header h1{font-size:22px}.header h1 span{color:var(--a)}
-.container{max-width:1100px;margin:0 auto;padding:20px}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.h{background:linear-gradient(135deg,#3D2B1F,#5A3D2E,#3D2B1F);color:#E8D5B7;padding:24px 20px;text-align:center}
+.h h1{font-size:22px}.h span{color:var(--a)}.h .sub{font-size:12px;opacity:.6;margin-top:4px}
+.c{max-width:1100px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.04);margin-bottom:20px}
 .card h3{font-size:16px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--brd)}
-.card table{width:100%;border-collapse:collapse;font-size:13px}
-.card th{background:var(--bg);padding:10px 8px;border-bottom:2px solid var(--brd);font-weight:600;text-align:left;width:35%}
-.card td{padding:10px 8px;border-bottom:1px solid var(--brd)}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:20px;background:var(--a);color:#fff;font-weight:600;text-decoration:none;font-size:13px;font-family:inherit;border:none;cursor:pointer}
-.footer{text-align:center;padding:24px;color:var(--mu);font-size:12px}
-@media(max-width:800px){.split{grid-template-columns:1fr}}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--bg);padding:10px 8px;border-bottom:2px solid var(--brd);font-weight:600;text-align:left;width:30%}
+.tbl td{padding:10px 8px;border-bottom:1px solid var(--brd)}
+.inp{width:100%;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit}
+.sel{width:100%;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit;background:#fff}
+.txt{width:100%;min-height:60px;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:20px;background:var(--a);color:#fff;font-weight:600;text-decoration:none;font-size:13px;font-family:inherit;border:none;cursor:pointer;margin:4px}
+.fot{text-align:center;padding:24px;color:var(--mu);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="header"><h1>亲本<span>靓丽</span> · 综合实验报告</h1><div style="font-size:12px;opacity:.6;margin-top:4px">护肝口服保健品 · 分解酒精度数 &ensp;|&ensp; SOD冻干片 · 抗氧化测试</div></div>
-<div class="container">
-<div class="split">
-  <div class="card" style="border-top:4px solid #D4A017"><h3>💊 SOD冻干片 · 抗氧化测试</h3><table id="sodTable"></table></div>
-  <div class="card" style="border-top:4px solid #3B6FB6"><h3>🛡️ 护肝口服保健品 · 分解酒精度数</h3><table id="liverTable"></table></div>
+<div class="h"><h1>亲本<span>靓丽</span> · 综合实验报告</h1><div class="sub">SOD冻干片 · 抗氧化测试 &ensp;|&ensp; 护肝口服保健品 · 分解酒精度数</div></div>
+<div class="c">
+<div class="grid">
+  <div class="card" style="border-top:4px solid #D4A017"><h3>💊 SOD冻干片 · 抗氧化测试</h3><table class="tbl" id="sodTbl"></table></div>
+  <div class="card" style="border-top:4px solid #3B6FB6"><h3>🛡️ 护肝口服保健品 · 分解酒精度数</h3><table class="tbl" id="liverTbl"></table></div>
 </div>
 <div style="text-align:center;margin:20px">
-  <button class="btn" style="background:#D4A017" onclick="saveExp('SOD冻干片')">💾 保存SOD实验</button>
-  <button class="btn" style="background:#3B6FB6" onclick="saveExp('护肝口服保健品')">💾 保存护肝实验</button>
-  <a class="btn" href="/">🏢 返回平台</a>
+  <button class="btn" style="background:#D4A017" onclick="save('SOD冻干片')">💾 保存SOD实验</button>
+  <button class="btn" style="background:#3B6FB6" onclick="save('护肝口服保健品')">💾 保存护肝实验</button>
+  <a class="btn" href="index.html">🏢 返回平台</a>
 </div>
 </div>
-<div class="footer">亲本靓丽品牌运营中心 · 综合实验报告</div>
+<div class="fot">亲本靓丽品牌运营中心 · 综合实验报告</div>
 
 <script>
-const liverFields = [
-  {id:'alcoholBefore',label:'初始酒精度数',type:'select',opts:['52度白酒','42度白酒','38度白酒','56度白酒','其他']},
-  {id:'productDose',label:'产品用量',type:'select',opts:['5ml','10ml','15ml','20ml','其他']},
-  {id:'reactionTime',label:'反应时间',type:'select',opts:['10分钟','20分钟','30分钟','60分钟','其他']},
-  {id:'alcoholAfter',label:'分解后酒精度数',type:'text'},
-  {id:'degradeRate',label:'酒精分解率',type:'select',opts:['降低10%以内','降低10%-20%','降低20%-30%','降低30%以上','无明显变化']},
-  {id:'expResult',label:'实验详细结果',type:'long'},
-  {id:'expConclusion',label:'实验结论',type:'long'},
-  {id:'videoUrl',label:'测试视频链接',type:'url'},
-  {id:'expImage',label:'实验截图说明',type:'long'}
-];
-const sodFields = [
+var SOD_FIELDS = [
   {id:'oxidationAgent',label:'氧化剂/指示剂',type:'select',opts:['碘酒','高锰酸钾溶液','双氧水','DCPIP溶液','其他']},
   {id:'productDose',label:'产品用量',type:'select',opts:['1/4片溶于水','1/2片溶于水','1片溶于水','2片溶于水','其他']},
   {id:'reactionTime',label:'反应时间',type:'select',opts:['1分钟','3分钟','5分钟','10分钟','其他']},
   {id:'colorChange',label:'颜色变化',type:'select',opts:['棕褐→无色透明','紫色→无色','深色→浅色','无明显变化','其他']},
   {id:'antioxidantLevel',label:'抗氧化能力评估',type:'select',opts:['很强','较强','一般','较弱','无效']},
-  {id:'expResult',label:'实验详细结果',type:'long'},
-  {id:'expConclusion',label:'实验结论',type:'long'},
-  {id:'videoUrl',label:'测试视频链接',type:'url'},
-  {id:'expImage',label:'实验截图说明',type:'long'}
+  {id:'expResult',label:'实验详细结果',type:'textarea'},
+  {id:'expConclusion',label:'实验结论',type:'textarea'},
+  {id:'videoUrl',label:'测试视频链接',type:'text',ph:'粘贴微信/抖音/网盘链接'},
+  {id:'expImage',label:'实验截图说明',type:'textarea'}
+];
+var LIVER_FIELDS = [
+  {id:'alcoholBefore',label:'初始酒精度数',type:'select',opts:['52度白酒','42度白酒','38度白酒','56度白酒','其他']},
+  {id:'productDose',label:'产品用量',type:'select',opts:['5ml','10ml','15ml','20ml','其他']},
+  {id:'reactionTime',label:'反应时间',type:'select',opts:['10分钟','20分钟','30分钟','60分钟','其他']},
+  {id:'alcoholAfter',label:'分解后酒精度数',type:'text'},
+  {id:'degradeRate',label:'酒精分解率',type:'select',opts:['降低10%以内','降低10%-20%','降低20%-30%','降低30%以上','无明显变化']},
+  {id:'expResult',label:'实验详细结果',type:'textarea'},
+  {id:'expConclusion',label:'实验结论',type:'textarea'},
+  {id:'videoUrl',label:'测试视频链接',type:'text',ph:'粘贴微信/抖音/网盘链接'},
+  {id:'expImage',label:'实验截图说明',type:'textarea'}
 ];
 
-function loadExp(name){
-  try{const d=JSON.parse(localStorage.getItem('qinben_exp_'+name)||'{}');return d;}catch(e){return{};}
-}
-function load(){
-  const liver=loadExp('护肝口服保健品');
-  const sod=loadExp('SOD冻干片');
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function renderTable(tblId, fields, data){
-    const prodName = tblId==='liverTable' ? '护肝口服保健品' : 'SOD冻干片';
-    const styleInp='width:100%;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit';
-    document.getElementById(tblId).innerHTML=fields.map(f=>{
-      const v=data[f.id]||'';
-      if(f.type==='long'){
-        return '<tr><th style="vertical-align:top;padding-top:14px">'+f.label+'</th><td><textarea data-field="'+f.id+'" data-product="'+prodName+'" style="'+styleInp+';min-height:60px;resize:vertical">'+esc(v)+'</textarea></td></tr>';
-      }
-      if(f.type==='select'&&f.opts){
-        return '<tr><th>'+f.label+'</th><td><select data-field="'+f.id+'" data-product="'+prodName+'" style="'+styleInp+'"><option value="">请选择</option>'+f.opts.map(o=>'<option value="'+o+'"'+(v===o?' selected':'')+'>'+o+'</option>').join('')+'</select></td></tr>';
-      }
-      if(f.type==='url'){
-        return '<tr><th>'+f.label+'</th><td><input data-field="'+f.id+'" data-product="'+prodName+'" value="'+esc(v)+'" placeholder="粘贴微信/抖音/网盘链接" style="'+styleInp+'"></td></tr>';
-      }
-      return '<tr><th>'+f.label+'</th><td><input data-field="'+f.id+'" data-product="'+prodName+'" value="'+esc(v)+'" style="'+styleInp+'"></td></tr>';
-    }).join('');
-  }
+  var h='';
+  fields.forEach(function(f){
+    var v=data[f.id]||'';
+    if(f.type==='textarea'){
+      h+='<tr><th style="vertical-align:top;padding-top:14px">'+f.label+'</th><td><textarea class="txt" data-field="'+f.id+'" data-product="'+tblId+'">'+esc(v)+'</textarea></td></tr>';
+    }else if(f.type==='select'&&f.opts){
+      h+='<tr><th>'+f.label+'</th><td><select class="sel" data-field="'+f.id+'" data-product="'+tblId+'"><option value="">请选择</option>';
+      f.opts.forEach(function(o){h+='<option value="'+o+'"'+(v===o?' selected':'')+'>'+o+'</option>';});
+      h+='</select></td></tr>';
+    }else{
+      h+='<tr><th>'+f.label+'</th><td><input class="inp" data-field="'+f.id+'" data-product="'+tblId+'" value="'+esc(v)+'" placeholder="'+(f.ph||'')+'"></td></tr>';
+    }
+  });
+  document.getElementById(tblId).innerHTML=h;
+}
 
-async function saveExp(product){
-  const fields={};
-  document.querySelectorAll('[data-product="'+product+'"]').forEach(el=>{
-    if(el.tagName==='SELECT'||el.tagName==='TEXTAREA'||el.tagName==='INPUT') fields[el.dataset.field]=el.value;
+function loadData(name){
+  try{return JSON.parse(localStorage.getItem('qinben_exp_'+name)||'{}');}catch(e){return{};}
+}
+
+function render(){
+  renderTable('sodTbl', SOD_FIELDS, loadData('SOD冻干片'));
+  renderTable('liverTbl', LIVER_FIELDS, loadData('护肝口服保健品'));
+}
+
+function save(product){
+  var fields={};
+  var els=document.querySelectorAll('[data-product="sodTbl"],[data-product="liverTbl"]');
+  var target=product==='SOD冻干片'?'sodTbl':'liverTbl';
+  els.forEach(function(el){
+    if(el.dataset.product!==target)return;
+    fields[el.dataset.field]=el.value;
   });
   localStorage.setItem('qinben_exp_'+product, JSON.stringify(fields));
-  alert('✅ '+product+' 实验数据已保存（浏览器本地）');
+  alert('✅ '+product+' 实验数据已保存');
 }
-  renderTable('liverTable', liverFields, liver);
-  renderTable('sodTable', sodFields, sod);
-}
-load();
+
+render();
 </script>
 </body>
 </html>
