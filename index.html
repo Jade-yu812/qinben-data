@@ -36,7 +36,7 @@ a{color:var(--a);text-decoration:none}
 </style>
 </head>
 <body>
-<div class="h"><h1>亲本<span>靓丽</span> · 品牌体验平台</h1><div class="sub">4款产品 · 永久可访问 · 更新于 2026/7/17 16:31:00</div></div>
+<div class="h"><h1>亲本<span>靓丽</span> · 品牌体验平台</h1><div class="sub">4款产品 · 永久可访问 · 更新于 2026/7/17 16:32:52</div></div>
 <div class="c" id="app"><div style="text-align:center;padding:40px;color:var(--mu)">⏳ 加载中...</div></div>
 
 <script>
@@ -66,7 +66,12 @@ function home(){
     });
     h+='</div></div>';
   });
-  h+='<div class="fot">亲本靓丽品牌运营中心 · 体验平台<br>📊 <a href="dashboard.html">综合体验报告</a> | 🔬 <a href="exp-report.html">综合实验报告</a></div>';
+  // Report cards section
+  h+='<div class="sec"><div class="stitle">📊 数据报告 <span class="badge be">2个</span></div><div class="grid">';
+  h+='<div class="card" style="border-color:#C49A4C30;cursor:pointer" onclick="location.href=\'dashboard.html\'"><div class="icon">📈</div><div class="name" style="color:#C49A4C">综合体验报告</div><div class="desc">活体验 + 润体验 · 全维度数据分析</div><div class="btns"><a class="btn rp" href="dashboard.html">📊 查看报告</a></div></div>';
+  h+='<div class="card" style="border-color:#C49A4C30;cursor:pointer" onclick="location.href=\'exp-report.html\'"><div class="icon">🔬</div><div class="name" style="color:#C49A4C">综合实验报告</div><div class="desc">护肝口服液 + SOD冻干片 · 实验数据汇总</div><div class="btns"><a class="btn rp" href="exp-report.html">🔬 查看报告</a></div></div>';
+  h+='</div></div>';
+  h+='<div class="fot">亲本靓丽品牌运营中心 · 体验平台</div>';
   return h;
 }
 
