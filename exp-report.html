@@ -21,6 +21,8 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg)
 .sel{width:100%;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit;background:#fff}
 .txt{width:100%;min-height:60px;padding:8px;border:1.5px solid #E8DDD2;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:20px;background:var(--a);color:#fff;font-weight:600;text-decoration:none;font-size:13px;font-family:inherit;border:none;cursor:pointer;margin:4px}
+.btn.pdf{background:#4A8A9E}
+@media print{.h{position:static}.btn,.fot{display:none}.card{break-inside:avoid;box-shadow:none}body{background:#fff}}
 .fot{text-align:center;padding:24px;color:var(--mu);font-size:12px}
 @media(max-width:800px){.grid{grid-template-columns:1fr}}
 </style>
@@ -36,6 +38,7 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg)
   <button class="btn" style="background:#D4A017" onclick="save('SOD冻干片')">💾 保存SOD实验</button>
   <button class="btn" style="background:#3B6FB6" onclick="save('护肝口服保健品')">💾 保存护肝实验</button>
   <a class="btn" href="index.html">🏢 返回平台</a>
+  <a class="btn pdf" href="javascript:window.print()">📥 下载PDF</a>
 </div>
 </div>
 <div class="fot">亲本靓丽品牌运营中心 · 综合实验报告</div>
