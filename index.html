@@ -2,19 +2,19 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>亲本靓丽 · 品牌体验平台</title>
 <style>
 :root{--r:#B8453A;--g:#5A9E7E;--a:#C49A4C;--bg:#FDF9F3;--dk:#3D2B1F;--mu:#A6988A;--brd:#E8DDD2}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--dk);font-size:14px}
 .header{background:linear-gradient(135deg,#3D2B1F,#5A3D2E,#3D2B1F);color:#E8D5B7;padding:18px 20px;text-align:center}
-.header h1{font-size:20px;font-weight:700}.header h1 span{color:var(--a)}.header .sub{font-size:11px;opacity:.6}
+.header h1{font-size:20px}.header h1 span{color:var(--a)}.header .sub{font-size:11px;opacity:.6}
 .container{max-width:960px;margin:0 auto;padding:16px}
 .cat-section{margin-bottom:24px}
 .cat-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:17px;font-weight:700}
 .badge{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:500}
-.badge.end{background:#E6F0E8;color:var(--g)}.badge.active{background:#FDF0ED;color:var(--r)}.badge.wait{background:#F0EBE3;color:var(--mu)}
+.badge.end{background:#E6F0E8;color:var(--g)}.badge.active{background:#FDF0ED;color:var(--r)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .pcard{background:#fff;border-radius:16px;padding:22px;border:2px solid var(--brd);position:relative}
 .picon{font-size:44px;margin-bottom:10px;text-align:center}
@@ -23,7 +23,6 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg)
 .pbar{height:6px;background:var(--brd);border-radius:3px;overflow:hidden;margin:10px 0}
 .pbarin{height:100%;border-radius:3px}
 .pmeta{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--mu);margin-bottom:12px}
-.pact{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .ptag{position:absolute;top:14px;right:14px;font-size:10px;padding:3px 10px;border-radius:10px;background:#E6F0E8;color:var(--g)}
 .ptag.act{background:#FDF0ED;color:var(--r)}
 .footer{text-align:center;padding:24px;color:var(--mu);font-size:11px}
@@ -40,13 +39,13 @@ function home(){var h="";var cats={completed:[],active:[],pending:[]};
 PRODS.forEach(function(p){cats[p.status||"pending"].push(p);});
 [{key:"completed",icon:"✅",title:"结束体验",cls:"end"},{key:"active",icon:"🔄",title:"正在体验",cls:"active"},{key:"pending",icon:"⏳",title:"等待体验",cls:"wait"}].forEach(function(c){
 var arr=cats[c.key];
-h+="<div class=cat-section><div class=cat-header>"+c.icon+" "+c.title+" <span class="badge "+c.cls+"">"+arr.length+"个</span></div><div class=pgrid>";
+h+='<div class="cat-section"><div class="cat-header">'+c.icon+' '+c.title+' <span class="badge '+c.cls+'">'+arr.length+'个</span></div><div class="pgrid">';
 arr.forEach(function(p){var d=DATA[p.name]||{},ts=p.testers||[],fl=ts.filter(function(t){return d[t]&&d[t][p.cf];}).length,pct=Math.round(fl/ts.length*100);
-h+="<div class=pcard style=border-color:"+p.color+"30><span class="ptag "+(p.status==="active"?"act":"")+"">"+(p.status==="completed"?"已结束":p.status==="active"?"进行中":"待开始")+"</span><div class=picon>"+p.icon+"</div><div class=pname style=color:"+p.color+">"+p.name+"</div><div class=pdesc>"+p.desc+"</div><div class=pmeta><span>👥 "+ts.length+"人</span><span>📝 "+fl+"人完成</span></div><div class=pbar><div class=pbarin style=width:"+pct+"%;background:"+p.color+"></div></div></div>";
+h+='<div class="pcard" style="border-color:'+p.color+'30"><span class="ptag '+(p.status==="active"?"act":"")+'">'+(p.status==="completed"?"已结束":p.status==="active"?"进行中":"待开始")+'</span><div class="picon">'+p.icon+'</div><div class="pname" style="color:'+p.color+'">'+p.name+'</div><div class="pdesc">'+p.desc+'</div><div class="pmeta"><span>👥 '+ts.length+'人</span><span>📝 '+fl+'人完成</span></div><div class="pbar"><div class="pbarin" style="width:'+pct+'%;background:'+p.color+'"></div></div></div>';
 });
-h+="</div></div>";
+h+='</div></div>';
 });
-h+="<div class=footer>亲本靓丽品牌运营中心 · 体验平台<br>📊 <a href=dashboard.html style=color:var(--a)>综合体验报告</a> | 🔬 <a href=exp-report.html style=color:var(--a)>综合实验报告</a></div>";
+h+='<div class="footer">亲本靓丽品牌运营中心 · 体验平台<br>📊 <a href="dashboard.html" style="color:var(--a)">综合体验报告</a></div>';
 return h;}
 document.getElementById("app").innerHTML=home();
 </script>
